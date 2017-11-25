@@ -1,6 +1,7 @@
 ## author: David Lee, me@ddlee.cn
 
 import numpy as np
+from zeronet.core.function import *
 
 class layer(object):
 	'''The base class for a layer in network.
@@ -61,45 +62,9 @@ class Linear(layer):
 		self.weights = (w, b)
 
 	def forward(self):
-		'''The weights cotains w and b,
-
-	    The input x has shape (N, d_1, ..., d_k) and contains a minibatch of N
-	    examples, where each example x[i] has shape (d_1, ..., d_k). We will
-	    reshape each input into a vector of dimension D = d_1 * ... * d_k, and
-	    then transform it to an output vector of dimension M.
-
-	    Inputs:
-	    - x: A numpy array containing input data, of shape (N, d_1, ..., d_k)
-
-	    Outputs:
-	    - out should have shape (N, M)
-		'''
-		x = self.input
-		x_ = x.reshape(self.batch_size, self.input_shape)
-    	w, b = self.weights
-    	self.out = np.dot(x_, w) + b
+    	self.out = linear_foward(self.input, self.weights)
 
 
 	def backward(self, dout):
-		'''Computes the backward pass for FC layer.
-
-	    Inputs:
-	    - dout: Upstream derivative, of shape (N, M)
-	    - x: Input data, of shape (N, d_1, ... d_k)
-	    - w: Weights, of shape (D, M)
-
-	    Returns a tuple of:
-	    - dx: Gradient with respect to x, of shape (N, d1, ..., d_k)
-	    - dw: Gradient with respect to w, of shape (D, M)
-	    - db: Gradient with respect to b, of shape (M,)
-
-	    TODO: where does dout come from?
-	    '''
-	    x = self.input
-		w, b = self.weights
-		dx = np.dot(dout, w.T)
-	    dx = dx.reshape(x.shape)
-	    x = x.reshape(self.batch_size, self.input_shape)
-	    dw = np.dot(x.T, dout)
-	    db = np.dot(dout.T, np.ones(self.batch_size))
+		dx, dw, db = linear_backward(dout, self.input, self.weights)
 	    self.grads = (dx, dw, db)
