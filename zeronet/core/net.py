@@ -17,17 +17,17 @@ class net(object):
 		check layers
 		'''
 		assert is_instance(layer_stack[0], InputLayer)
+		assert is_instance(layer_stack[self.layer_mount], LossLayer)
 		for _layer in layer_stack:
 			assert is_instacne(_layer, layer)
 
 
-	def _init_params(self, warmup_data):
+	def warmup(self, warmup_data):
 		'''
 		init params using warmup_data
 		'''
 		for _layer in self.layer_stack:
-			_layer._infer_shape()
-			_layer._init_params()
+			_layer.warmup(warmup_data)
 
 	def forward(self, data_batch):
 		'''
@@ -41,7 +41,7 @@ class net(object):
 		return out
 
 
-	def backward(self, loss):
+	def backward(self, optimizer, loss):
 		'''
 		perform back propagation and update params recurstively
 		'''
@@ -50,5 +50,6 @@ class net(object):
 				dout = _layer.grad(dout)
 			else:
 				dout = _layer.grad(loss)
+			_layer.update(dout, optimizer)
 
 		return dout
