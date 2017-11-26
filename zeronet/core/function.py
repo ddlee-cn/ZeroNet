@@ -98,7 +98,6 @@ def conv_forward(x, weights, conv_params):
     return out
 
 
-
 def conv_backward(x, weights, conv_params, dout):
     '''
     Inputs:

@@ -1,5 +1,5 @@
 ## Author: David Lee, me@ddlee.cn
-from zeronet.core.layer import *
+from layer import *
 
 class net(object):
 	'''

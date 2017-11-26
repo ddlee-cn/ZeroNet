@@ -4,7 +4,7 @@
 
 import numpy as np
 import defaultdict
-from zeronet.core.function import *
+from function import *
 
 class layer(object):
 	'''The base class for a layer in network.
@@ -17,16 +17,15 @@ class layer(object):
 	params contains names and value for params insied layer
 	'''
 
-	def __init__(self, config):
-		self.config = config
+	def __init__(self, *inputs):
 		self.shape_dict = defaultdict()
 		self.params = defaultdict()
 
 	def _infer_shape(self, warmup_data):
 		'''
-		infer param shape using warmup data and configs
-		return a dict with name and shape for
-		params initiation'''
+		infer param shape using warmup data and configs return a dict with name and shape for
+		params initiation, should be called in a warmup phase after the net is defined
+		'''
 		raise NotImplementedError
 
 
@@ -38,7 +37,7 @@ class layer(object):
 
 
 	def warm_up(self, warmup_data):
-		'''wrapper to be called
+		'''wrapper to be called in warmup phase
 		'''
 		self._infer_shape(warmup_data)
 		self._init_params()
@@ -83,11 +82,6 @@ class Linear(layer):
 
 
 	def _infer_shape(self, warmup_data):
-		'''infer input and output shape to initiate weights,
-		before the layer sees input data
-		??? how to
-		solution: recursively call this method in a init forward pass
-		'''
 		self.batch_size = self.warmup_data.shape[0]
 		self.input_shape = np.prod(self.warmup_data.shape[1:])
 		self.shape_dict['w'] = (self.input_shape, self.output_shape)
