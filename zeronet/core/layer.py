@@ -3,28 +3,49 @@
 ## which stand for the start and the end of a network
 
 import numpy as np
+import defaultdict
 from zeronet.core.function import *
 
 class layer(object):
 	'''The base class for a layer in network.
 	It contains parameters, forward and backward operation,
-	as well as connection info
+	as well as connection info(TODO)
 
 	state dict:
-	batch_size, input_shape, output_shape, 
-	input, out, grads
+	config should include super-params for this layer
+	shape_dict contains names and shapes for params inside layer
+	params contains names and value for params insied layer
 	'''
 
-	def __init__():
-		pass
+	def __init__(config):
+		self.config = config
+		self.shape_dict = defaultdict()
+		self.params = defaultdict()
 
-	def _infer_shape():
-		pass
+	def _infer_shape(self, warmup_data):
+		'''
+		infer param shape using warmup data and configs
+		return a dict with name and shape for
+		params initiation'''
+		raise NotImplementedError
 
-	def _init_params():
-		'''initiate weights inside the layer'''
 
-    def forward(self):
+	def _init_params(self):
+		'''initiate weights inside the layer, layer.params should be a dict
+		with param names and values'''
+		for name, shape in self.shape_dict.iter_items():
+			self.params[name] = np.random.normal(mu, std, size=shape)
+
+
+	def warm_up(self, warmup_data):
+		'''wrapper to be called
+		'''
+		self._infer_shape(warmup_data)
+		self._init_params()
+
+
+
+    def forward(self, input):
         '''Defines the computation performed at every call.
 
         Should be overriden by all subclasses.
@@ -32,8 +53,8 @@ class layer(object):
         raise NotImplementedError
 
 
-    def grad(self):
-	    '''Return the gradients of this layer
+    def grad(self, input, dout):
+	    '''Return the gradients of this layer, in a dict
 
 	    Should be overriden by all subclasses.
 	    '''
@@ -41,18 +62,26 @@ class layer(object):
 
     def update(self, optimizer):
     	'''Update the params inside this layer,
-    	should be called after backward process.'''
+    	should be called after backward process.
+    	optimizer should be a partial function after configuration
+    	in the model class'''
+    	for name, param in self.params.iter_items():
+    		param_grad = grads[name]
+    		next_param = optimizer(param, param_grad)
+    		self.params[name] = next_param
+
+
 
 
 
 class Linear(layer):
 	'''shape is a tuple that define the out shape of this FC layer,
 	'''
-	def __init__(self, shape):
-		'''nearly do nothing when creating layer class
+	def __init__(self, config):
+		'''for linear(FC) layer, config is an int 
+		which specifies the output shape
 		'''
-		self.input = input
-		self.output_shape = shape
+		self.output_shape = self.config
 
 
 
@@ -64,29 +93,13 @@ class Linear(layer):
 		'''
 		self.batch_size = self.warmup_data.shape[0]
 		self.input_shape = np.prod(self.warmup_data.shape[1:])
+		self.shape_dict['w'] = (self.input_shape, self.output_shape)
+		self.shape_dict['b'] = self.output_shape
 
-	def _init_weights(self):
-		'''
-		w: A numpy array of weights, of shape (D, M)
-	    b: A numpy array of biases, of shape (M,)'''
-	    mu = 0
-	    std = 0.5
-		w_shape = (self.input_shape, self.output_shape)
-		w = np.random.normal(mu, std, w_shape)
-		b_shape = self.output_shape
-		b = np.random.normal(mu, std, b_shape)
-		self.weights = (w, b)
 
 	def forward(self, input):
-		'''
-		perform forward pass. 
-		after forward pass, the input data is contained in layer 
-		for gradient caculation
-		'''
-		self.input = input
-    	self.out = linear_foward(self.input, self.weights)
+    	self.out = linear_foward(input, self.weights)
 
 
-	def grad(self, dout):
-		dx, dw, db = linear_backward(dout, self.input, self.weights)
-	    self.grads = (dx, dw, db)
+	def grad(self, input, dout):
+		self.grads = linear_backward(input, self.weights, dout)
