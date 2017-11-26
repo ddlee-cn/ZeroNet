@@ -4,7 +4,7 @@
 
 import numpy as np
 from collections import defaultdict
-from function import *
+from .function import *
 
 __all__ = ['layer', 'Linear', 'Conv', 'ReLU', 'Sigmoid']
 
@@ -21,8 +21,8 @@ class layer(object):
     '''
 
     def __init__(self, *inputs):
-        self.shape_dict = defaultdict()
-        self.params = defaultdict()
+        self.shape_dict = defaultdict(tuple)
+        self.params = defaultdict(np.array)
 
     def _infer_shape(self, warmup_data):
         '''
@@ -35,7 +35,9 @@ class layer(object):
     def _init_params(self):
         '''initiate weights inside the layer, layer.params should be a dict
         with param names and values'''
-        for name, shape in self.shape_dict.iter_items():
+        mu = 0
+        std = 0.5
+        for name, shape in self.shape_dict.items():
             self.params[name] = np.random.normal(mu, std, size=shape)
 
     def warmup(self, warmup_data):
@@ -58,7 +60,7 @@ class layer(object):
             # some layer have no params
             pass
         else:
-            for name, param in self.params.iter_items():
+            for name, param in self.params.items():
                 param_grad = grads[name]
                 next_param = optimizer(param, param_grad)
                 self.params[name] = next_param
@@ -68,11 +70,12 @@ class Linear(layer):
     '''shape is a tuple that define the out shape of this FC layer,
     '''
 
-    def __init__(self, out_shape):
+    def __init__(self, output_shape):
         '''for linear(FC) layer, config is an int
         which specifies the output shape
         '''
         self.output_shape = output_shape
+        super(Linear, self).__init__()
 
     def _infer_shape(self, warmup_data):
         self.batch_size = warmup_data.shape[0]
@@ -81,8 +84,8 @@ class Linear(layer):
         self.shape_dict['b'] = self.output_shape
 
     def forward(self, input):
-        out = linear_foward(input,
-                            (self.params['w'], self.params['b']))
+        out = linear_forward(input,
+                             (self.params['w'], self.params['b']))
         return out
 
     def grad(self, input, dout):
@@ -95,9 +98,10 @@ class Conv(layer):
     def __init__(self, filter=1, kernel_size=3, stride=1, pad=0):
         self.filter = filter
         self.kernel_size = kernel_size
-        self.conv_params = defaultdict()
+        self.conv_params = defaultdict(int)
         self.conv_params['stride'] = stride
         self.conv_params['pad'] = pad
+        super(Conv, self).__init__()
 
     def _infer_shape(self, warmup_data):
         '''
