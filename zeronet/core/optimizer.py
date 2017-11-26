@@ -1,5 +1,6 @@
 import numpy as np
 
+__all__ = ['sgd', 'sgd_momentum']
 """
 This file implements various first-order update rules that are commonly used
 for training neural networks. Each update rule accepts current weights and the
@@ -37,7 +38,8 @@ def sgd(w, dw, config=None):
     config format:
     - learning_rate: Scalar learning rate.
     """
-    if config is None: config = {}
+    if config is None:
+        config = {}
     config.setdefault('learning_rate', 1e-2)
 
     w -= config['learning_rate'] * dw
@@ -55,18 +57,19 @@ def sgd_momentum(w, dw, config=None):
     - velocity: A numpy array of the same shape as w and dw used to store a
       moving average of the gradients.
     """
-    if config is None: config = {}
+    if config is None:
+        config = {}
     config.setdefault('learning_rate', 1e-2)
     config.setdefault('momentum', 0.9)
     v = config.get('velocity', np.zeros_like(w))
 
     next_w = None
-    v = config['momentum'] * v - config['learning_rate'] * dw # integrate velocity
-    next_w =  w + v
+    v = config['momentum'] * v - \
+        config['learning_rate'] * dw  # integrate velocity
+    next_w = w + v
     config['velocity'] = v
 
     return next_w, config
-
 
 
 def rmsprop(x, dx, config=None):
@@ -81,14 +84,15 @@ def rmsprop(x, dx, config=None):
     - epsilon: Small scalar used for smoothing to avoid dividing by zero.
     - cache: Moving average of second moments of gradients.
     """
-    if config is None: config = {}
+    if config is None:
+        config = {}
     config.setdefault('learning_rate', 1e-2)
     config.setdefault('decay_rate', 0.99)
     config.setdefault('epsilon', 1e-8)
     config.setdefault('cache', np.zeros_like(x))
     cache, decay_rate, eps, learning_rate \
         = config['cache'], config['decay_rate'], \
-          config['epsilon'], config['learning_rate']
+        config['epsilon'], config['learning_rate']
     cache = decay_rate * cache + (1 - decay_rate) * dx**2
     next_x = -learning_rate * dx / (np.sqrt(cache) + eps) + x
     config['cache'] = cache
@@ -110,7 +114,8 @@ def adam(x, dx, config=None):
     - v: Moving average of squared gradient.
     - t: Iteration number.
     """
-    if config is None: config = {}
+    if config is None:
+        config = {}
     config.setdefault('learning_rate', 1e-3)
     config.setdefault('beta1', 0.9)
     config.setdefault('beta2', 0.999)
@@ -121,8 +126,8 @@ def adam(x, dx, config=None):
 
     next_x = None
     learning_rate, beta1, beta2, eps, m, v, t \
-    = config['learning_rate'], config['beta1'], config['beta2'], \
-      config['epsilon'], config['m'], config['v'], config['t']
+        = config['learning_rate'], config['beta1'], config['beta2'], \
+        config['epsilon'], config['m'], config['v'], config['t']
 
     t += 1
     m = beta1 * m + (1 - beta1) * dx

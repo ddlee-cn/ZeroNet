@@ -1,5 +1,10 @@
-## Author: David Lee, me@ddlee.cn
+# Author: David Lee, me@ddlee.cn
 import numpy as np
+
+__all__ = ['linear_forward', 'linear_forward',
+           'conv_forward', 'conv_backward',
+           'relu_forward', 'relu_backward',
+           'sigmoid_backward', 'sigmoid_backward']
 
 
 def linear_forward(x, weights):
@@ -53,7 +58,7 @@ def linear_backward(x, weights, dout):
     x = x.reshape(batch_size, input_size)
     dw = np.dot(x.T, dout)
     db = np.dot(dout.T, np.ones(batch_size))
-    grads = dict({'x':dx, 'w':dw, 'b':db})
+    grads = dict({'x': dx, 'w': dw, 'b': db})
     return grads
 
 
@@ -85,16 +90,19 @@ def conv_forward(x, weights, conv_params):
     stride, pad = conv_param['stride'], conv_param['pad']
     H_out = int(1 + (H + 2 * pad - HH) / stride)
     W_out = int(1 + (W + 2 * pad - WW) / stride)
-    out = np.zeros((N , F , H_out, W_out))
+    out = np.zeros((N, F, H_out, W_out))
 
-    x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
+    x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)),
+                   mode='constant', constant_values=0)
     for i in range(H_out):
         for j in range(W_out):
-            x_pad_masked = x_pad[:, :, i*stride:i*stride+HH, j*stride:j*stride+WW] # slide window
-            for k in range(F): # # of filters
-                out[:, k, i, j] = np.sum(x_pad_masked * w[k, :, :, :], axis=(1,2,3))
+            x_pad_masked = x_pad[:, :, i * stride:i * stride +
+                                 HH, j * stride:j * stride + WW]  # slide window
+            for k in range(F):  # of filters
+                out[:, k, i, j] = np.sum(
+                    x_pad_masked * w[k, :, :, :], axis=(1, 2, 3))
 
-    out = out + (b)[None, :, None, None] # add bias
+    out = out + (b)[None, :, None, None]  # add bias
     return out
 
 
@@ -115,7 +123,8 @@ def conv_backward(x, weights, conv_params, dout):
     stride, pad = conv_param['stride'], conv_param['pad']
     H_out = int(1 + (H + 2 * pad - HH) / stride)
     W_out = int(1 + (W + 2 * pad - WW) / stride)
-    x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
+    x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)),
+                   mode='constant', constant_values=0)
 
     dx = np.zeros_like(x)
     dx_pad = np.zeros_like(x_pad)
@@ -126,25 +135,27 @@ def conv_backward(x, weights, conv_params, dout):
 
     for i in range(H_out):
         for j in range(W_out):
-            x_pad_masked = x_pad[:, :, i*stride:i*stride+HH, j*stride:j*stride+WW]
+            x_pad_masked = x_pad[:, :, i * stride:i *
+                                 stride + HH, j * stride:j * stride + WW]
             for k in range(F):
-                dw[k, :, :, :] += np.sum(x_pad_masked * (dout[:, k, i, j])[:, None, None, None], axis=0) #?
+                dw[k, :, :, :] += np.sum(x_pad_masked * (dout[:, k, i, j])
+                                         [:, None, None, None], axis=0)  # ?
             for n in range(N):
-                dx_pad[n, :, i*stride:i*stride+HH, j*stride:j*stride+WW] += np.sum((w[:, :, :, :] * 
-                                                                    (dout[n, :, i, j])[:, None, None, None]), axis=0)
+                dx_pad[n, :, i * stride:i * stride + HH, j * stride:j * stride + WW] += np.sum((w[:, :, :, :] *
+                                                                                                (dout[n, :, i, j])[:, None, None, None]), axis=0)
     dx = dx_pad[:, :, pad:-pad, pad:-pad]
-    grads = dict({"x":dx, "w":dw, "b":db})
+    grads = dict({"x": dx, "w": dw, "b": db})
     return grads
 
 
 def relu_forward(x):
-    out = x*(x>0)
+    out = x * (x > 0)
     return out
 
 
 def relu_backward(x, dout):
-    dx = dout*(x>0)
-    grads = dict({'x':dx})
+    dx = dout * (x > 0)
+    grads = dict({'x': dx})
     return grads
 
 
@@ -155,5 +166,5 @@ def sigmoid_forward(x):
 
 def sigmoid_backward(x, dout):
     dx = dout * (1.0 - dout)
-    grads = dict({'x':dx})
+    grads = dict({'x': dx})
     return grads
