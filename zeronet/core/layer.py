@@ -46,7 +46,6 @@ class layer(object):
 
     def forward(self, input):
         '''Defines the computation performed at every call.
-
         Should be overriden by all subclasses.
         '''
         raise NotImplementedError
@@ -54,20 +53,23 @@ class layer(object):
 
     def grad(self, input, dout):
 	    '''Return the gradients of this layer, in a dict
-
 	    Should be overriden by all subclasses.
 	    '''
     	raise NotImplementedError
 
-    def update(self, optimizer):
+    def update(self, grads, optimizer):
     	'''Update the params inside this layer,
     	should be called after backward process.
     	optimizer should be a partial function after configuration
     	in the model class'''
-    	for name, param in self.params.iter_items():
-    		param_grad = grads[name]
-    		next_param = optimizer(param, param_grad)
-    		self.params[name] = next_param
+    	if len(self.params) == 0:
+    		# some layer have no params
+    		pass
+    	else:    		
+	    	for name, param in self.params.iter_items():
+	    		param_grad = grads[name]
+	    		next_param = optimizer(param, param_grad)
+	    		self.params[name] = next_param
 
 
 class Linear(layer):
@@ -99,7 +101,7 @@ class Linear(layer):
 
 
 class Conv(layer):
-	def __init__(self, filter=1, kernel_size=3, stride=0, pad=0):
+	def __init__(self, filter=1, kernel_size=3, stride=1, pad=0):
 		self.filter = filter
 		self.kernel_size = kernel_size
 		self.conv_params = defaultdict()
@@ -122,3 +124,31 @@ class Conv(layer):
 	def grad(self, input, dout):
 		grads = conv_backward(input, (self.params['w'], self.params['b']), self.conv_params, dout)
 		return grads
+
+
+class ReLU(layer):
+	def __init__(self):
+		pass
+
+	def _infer_shape(self, warmup_data):
+		pass
+
+	def forward(self, input):
+		return relu_forward(input)
+
+	def grad(self, input, dout):
+		return relu_backward(input, dout)
+
+
+class Sigmoid(layer):
+	def __init__(self):
+		pass
+
+	def _infer_shape(self, warmup_data):
+		pass
+
+	def forward(self, input):
+		return sigmoid_forward(input)
+
+	def grad(self, input, dout):
+		return sigmoid_backward(input, dout)

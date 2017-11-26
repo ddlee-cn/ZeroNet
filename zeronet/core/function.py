@@ -53,7 +53,7 @@ def linear_backward(x, weights, dout):
     x = x.reshape(batch_size, input_size)
     dw = np.dot(x.T, dout)
     db = np.dot(dout.T, np.ones(batch_size))
-    grads = (dx, dw, db)
+    grads = dict({'x':dx, 'w':dw, 'b':db})
     return grads
 
 
@@ -133,5 +133,27 @@ def conv_backward(x, weights, conv_params, dout):
                 dx_pad[n, :, i*stride:i*stride+HH, j*stride:j*stride+WW] += np.sum((w[:, :, :, :] * 
                                                                     (dout[n, :, i, j])[:, None, None, None]), axis=0)
     dx = dx_pad[:, :, pad:-pad, pad:-pad]
-    grads = (dx, dw, db)
+    grads = dict({"x":dx, "w":dw, "b":db})
+    return grads
+
+
+def relu_forward(x):
+    out = x*(x>0)
+    return out
+
+
+def relu_backward(x, dout):
+    dx = dout*(x>0)
+    grads = dict({'x':dx})
+    return grads
+
+
+def sigmoid_forward(x):
+    out = 1 / (1 + np.exp(-x))
+    return out
+
+
+def sigmoid_backward(x, dout):
+    dx = dout * (1.0 - dout)
+    grads = dict({'x':dx})
     return grads
