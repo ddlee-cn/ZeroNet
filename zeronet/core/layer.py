@@ -17,7 +17,7 @@ class layer(object):
 	params contains names and value for params insied layer
 	'''
 
-	def __init__(config):
+	def __init__(self, config):
 		self.config = config
 		self.shape_dict = defaultdict()
 		self.params = defaultdict()
@@ -71,17 +71,14 @@ class layer(object):
     		self.params[name] = next_param
 
 
-
-
-
 class Linear(layer):
 	'''shape is a tuple that define the out shape of this FC layer,
 	'''
-	def __init__(self, config):
+	def __init__(self, out_shape):
 		'''for linear(FC) layer, config is an int 
 		which specifies the output shape
 		'''
-		self.output_shape = self.config
+		self.output_shape = output_shape
 
 
 
@@ -98,8 +95,36 @@ class Linear(layer):
 
 
 	def forward(self, input):
-    	self.out = linear_foward(input, self.weights)
+    	out = linear_foward(input, (self.params['w'], self.params['b']))
+    	return out
 
 
 	def grad(self, input, dout):
-		self.grads = linear_backward(input, self.weights, dout)
+		grads = linear_backward(input, (self.params['w'], self.params['b']), dout)
+		return grads
+
+
+class Conv(layer):
+	def __init__(self, filter=1, kernel_size=3, stride=0, pad=0):
+		self.filter = filter
+		self.kernel_size = kernel_size
+		self.conv_params = defaultdict()
+		self.conv_params['stride'] = stride
+		self.conv_params['pad'] = pad
+
+	def _infer_shape(self, warmup_data):
+		'''
+		the input should be in shape (N, C, H, W)
+		(batch_size, channels, Height, Width)'''
+		self.batch_size = warmup_data.shape[0]
+		self.channels = warmup_data.shape[1]
+		self.shape_dict['w'] = (self.filter, self.channels, self.kernel_size, self.kernel_size)
+		self.shape_dict['b'] = (self.filter, )
+
+	def forward(self, input):
+		out = conv_forward(input, (self.params['w'], self.params['b']), self.conv_params)
+		return out
+
+	def grad(self, input, dout):
+		grads = conv_backward(input, (self.params['w'], self.params['b']), self.conv_params, dout)
+		return grads
