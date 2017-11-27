@@ -1,8 +1,16 @@
 from builtins import range
-from past.builtins import xrange
 
 import numpy as np
 from random import randrange
+
+__all__ = ['eval_numerical_gradient', 'eval_numerical_gradient_array',
+           'eval_numerical_gradient_blobs', 'rel_error']
+
+
+def rel_error(x, y):
+    """ returns relative error """
+    return np.max(np.abs(x - y) / (np.maximum(1e-8, np.abs(x) + np.abs(y))))
+
 
 def eval_numerical_gradient(f, x, verbose=True, h=0.00001):
     """
@@ -11,7 +19,7 @@ def eval_numerical_gradient(f, x, verbose=True, h=0.00001):
     - x is the point (numpy array) to evaluate the gradient at
     """
 
-    fx = f(x) # evaluate function value at original point
+    fx = f(x)  # evaluate function value at original point
     grad = np.zeros_like(x)
     # iterate over all indexes in x
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
@@ -20,17 +28,17 @@ def eval_numerical_gradient(f, x, verbose=True, h=0.00001):
         # evaluate function at x+h
         ix = it.multi_index
         oldval = x[ix]
-        x[ix] = oldval + h # increment by h
-        fxph = f(x) # evalute f(x + h)
+        x[ix] = oldval + h  # increment by h
+        fxph = f(x)  # evalute f(x + h)
         x[ix] = oldval - h
-        fxmh = f(x) # evaluate f(x - h)
-        x[ix] = oldval # restore
+        fxmh = f(x)  # evaluate f(x - h)
+        x[ix] = oldval  # restore
 
         # compute the partial derivative with centered formula
-        grad[ix] = (fxph - fxmh) / (2 * h) # the slope
+        grad[ix] = (fxph - fxmh) / (2 * h)  # the slope
         if verbose:
             print(ix, grad[ix])
-        it.iternext() # step to next dimension
+        it.iternext()  # step to next dimension
 
     return grad
 
@@ -101,7 +109,7 @@ def eval_numerical_gradient_blobs(f, inputs, output, h=1e-5):
 
 def eval_numerical_gradient_net(net, inputs, output, h=1e-5):
     return eval_numerical_gradient_blobs(lambda *args: net.forward(),
-                inputs, output, h=h)
+                                         inputs, output, h=h)
 
 
 def grad_check_sparse(f, x, analytic_grad, num_checks=10, h=1e-5):
@@ -114,15 +122,15 @@ def grad_check_sparse(f, x, analytic_grad, num_checks=10, h=1e-5):
         ix = tuple([randrange(m) for m in x.shape])
 
         oldval = x[ix]
-        x[ix] = oldval + h # increment by h
-        fxph = f(x) # evaluate f(x + h)
-        x[ix] = oldval - h # increment by h
-        fxmh = f(x) # evaluate f(x - h)
-        x[ix] = oldval # reset
+        x[ix] = oldval + h  # increment by h
+        fxph = f(x)  # evaluate f(x + h)
+        x[ix] = oldval - h  # increment by h
+        fxmh = f(x)  # evaluate f(x - h)
+        x[ix] = oldval  # reset
 
         grad_numerical = (fxph - fxmh) / (2 * h)
         grad_analytic = analytic_grad[ix]
         rel_error = (abs(grad_numerical - grad_analytic) /
-                    (abs(grad_numerical) + abs(grad_analytic)))
+                     (abs(grad_numerical) + abs(grad_analytic)))
         print('numerical: %f analytic: %f, relative error: %e'
-              %(grad_numerical, grad_analytic, rel_error))
+              % (grad_numerical, grad_analytic, rel_error))
