@@ -1,14 +1,12 @@
 import numpy as np
 import os
-from scipy.misc import imread
-import platform
 import pickle
 
 
 def load_CIFAR_batch(filename):
     """ load single batch of cifar """
     with open(filename, 'rb') as f:
-        datadict = pickle.load(f)
+        datadict = pickle.load(f, encoding='latin1') # data encoding
         X = datadict['data']
         Y = datadict['labels']
         X = X.reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float")
@@ -32,7 +30,7 @@ def load_CIFAR10(ROOT):
     return Xtr, Ytr, Xte, Yte
 
 
-def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000,
+def get_CIFAR10_data(dir='../data/cifar-10-batches-py/', num_training=49000, num_validation=1000, num_test=1000,
                      subtract_mean=True):
     """
     Load the CIFAR-10 dataset from disk and perform preprocessing to prepare
@@ -40,8 +38,7 @@ def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000,
     condensed to a single function.
     """
     # Load the raw CIFAR-10 data
-    cifar10_dir = 'cs231n/datasets/cifar-10-batches-py'
-    X_train, y_train, X_test, y_test = load_CIFAR10(cifar10_dir)
+    X_train, y_train, X_test, y_test = load_CIFAR10(dir)
 
     # Subsample the data
     mask = list(range(num_training, num_training + num_validation))
