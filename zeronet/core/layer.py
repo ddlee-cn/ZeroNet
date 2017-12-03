@@ -6,7 +6,7 @@ import numpy as np
 from collections import defaultdict
 from zeronet.core.function import *
 
-__all__ = ['layer', 'Linear', 'Conv', 'ReLU', 'Sigmoid']
+__all__ = ['layer', 'Linear', 'Conv', 'Pool', 'ReLU', 'Sigmoid']
 
 
 class layer(object):
@@ -75,12 +75,12 @@ class Linear(layer):
     '''shape is a tuple that define the out shape of this FC layer,
     '''
 
-    def __init__(self, output_shape):
+    def __init__(self, name="linear", output_shape=256):
         '''for linear(FC) layer, config is an int
         which specifies the output shape
         '''
+        super(Linear, self).__init__(name)
         self.output_shape = output_shape
-        super(Linear, self).__init__()
 
     def _infer_shape(self, warmup_data):
         self.batch_size = warmup_data.shape[0]
@@ -100,13 +100,13 @@ class Linear(layer):
 
 
 class Conv(layer):
-    def __init__(self, filter=1, kernel_size=3, stride=1, pad=0):
+    def __init__(self, name="conv", filter=1, kernel_size=3, stride=1, pad=0):
+        super(Conv, self).__init__(name)
         self.filter = filter
         self.kernel_size = kernel_size
         self.conv_params = defaultdict(int)
         self.conv_params['stride'] = stride
         self.conv_params['pad'] = pad
-        super(Conv, self).__init__()
 
     def _infer_shape(self, warmup_data):
         '''
@@ -131,12 +131,12 @@ class Conv(layer):
 
 
 class Pool(layer):
-    def __init__(self, pool_height=2, pool_width=2, stride=2):
+    def __init__(self, name="pool", pool_height=2, pool_width=2, stride=2):
+        super(Pool, self).__init__(name)
         self.pool_params = defaultdict(int)
         self.pool_params['pool_height'] = pool_height
         self.pool_params['pool_width'] = pool_width
         self.pool_params['stride'] = stride
-        super(Conv, self).__init__()
 
     def _infer_shape(self, warmup_data):
         pass
@@ -151,8 +151,8 @@ class Pool(layer):
 
 
 class ReLU(layer):
-    def __init__(self):
-        pass
+    def __init__(self, name="relu"):
+        super(ReLU, self).__init__(name)
 
     def _infer_shape(self, warmup_data):
         pass
@@ -165,8 +165,8 @@ class ReLU(layer):
 
 
 class Sigmoid(layer):
-    def __init__(self):
-        pass
+    def __init__(self, name="sigmoid"):
+        super(Sigmoid, self).__init__(name)
 
     def _infer_shape(self, warmup_data):
         pass
