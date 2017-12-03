@@ -4,7 +4,7 @@
 
 import numpy as np
 from collections import defaultdict
-from .function import *
+from core.function import *
 
 __all__ = ['layer', 'Linear', 'Conv', 'ReLU', 'Sigmoid']
 

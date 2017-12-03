@@ -3,7 +3,7 @@ import os
 import pickle as pickle
 
 import numpy as np
-from optimizer import *
+from core.optimizer import *
 
 
 class model(object):

@@ -1,5 +1,5 @@
 # Author: David Lee, me@ddlee.cn
-from layer import *
+from core.layer import *
 
 
 class net(object):
