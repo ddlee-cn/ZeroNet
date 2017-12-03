@@ -1,7 +1,6 @@
 
 import os
 import pickle as pickle
-from functiontools import partial
 import numpy as np
 import zeronet.core.optimizer as optim
 
