@@ -3,6 +3,7 @@ import numpy as np
 
 __all__ = ['linear_forward', 'linear_backward',
            'conv_forward', 'conv_backward',
+           'max_pool_forward', 'max_pool_backward',
            'relu_forward', 'relu_backward',
            'sigmoid_backward', 'sigmoid_backward',
            'svm_loss', 'softmax_loss']
@@ -203,7 +204,7 @@ def max_pool_backward(x, pool_param, dout):
         max_x_masked = np.max(x_masked,axis=(2,3))
         temp_binary_mask = (x_masked == (max_x_masked)[:,:,None,None])
         dx[:,:,i*stride : i*stride+HH, j*stride : j*stride+WW] += temp_binary_mask * (dout[:,:,i,j])[:,:,None,None]
-    grads = dict({"dx":dx})
+    grads = dict({"x":dx})
     return grads
 
 
