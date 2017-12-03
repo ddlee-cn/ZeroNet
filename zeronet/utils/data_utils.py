@@ -4,21 +4,23 @@ from scipy.misc import imread
 import platform
 import pickle
 
+
 def load_CIFAR_batch(filename):
     """ load single batch of cifar """
     with open(filename, 'rb') as f:
-        datadict = load_pickle(f)
+        datadict = pickle.load(f)
         X = datadict['data']
         Y = datadict['labels']
-        X = X.reshape(10000, 3, 32, 32).transpose(0,2,3,1).astype("float")
+        X = X.reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float")
         Y = np.array(Y)
         return X, Y
+
 
 def load_CIFAR10(ROOT):
     """ load all of cifar """
     xs = []
     ys = []
-    for b in range(1,6):
+    for b in range(1, 6):
         f = os.path.join(ROOT, 'data_batch_%d' % (b, ))
         X, Y = load_CIFAR_batch(f)
         xs.append(X)
@@ -66,7 +68,7 @@ def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000,
 
     # Package data into a dictionary
     return {
-      'X_train': X_train, 'y_train': y_train,
-      'X_val': X_val, 'y_val': y_val,
-      'X_test': X_test, 'y_test': y_test,
+        'X_train': X_train, 'y_train': y_train,
+        'X_val': X_val, 'y_val': y_val,
+        'X_test': X_test, 'y_test': y_test,
     }
