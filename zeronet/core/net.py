@@ -1,6 +1,6 @@
 # Author: David Lee, me@ddlee.cn
-from core.layer import *
-from core.function import *
+from zeronet.core.layer import *
+from zeronet.core.function import *
 
 class net(object):
     '''

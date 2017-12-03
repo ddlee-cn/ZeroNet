@@ -3,7 +3,7 @@ import os
 import pickle as pickle
 from functiontools import partial
 import numpy as np
-import core.optimizer as optim
+import zeronet.core.optimizer as optim
 
 
 class model(object):

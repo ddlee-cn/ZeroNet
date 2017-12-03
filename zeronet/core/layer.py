@@ -4,7 +4,7 @@
 
 import numpy as np
 from collections import defaultdict
-from core.function import *
+from zeronet.core.function import *
 
 __all__ = ['layer', 'Linear', 'Conv', 'ReLU', 'Sigmoid']
 
