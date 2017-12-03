@@ -62,13 +62,14 @@ class layer(object):
             return config
         else:
             for name, param in self.params.items():
-            # Keep a optim config dict for every param in the net
+                # Keep a optim config dict for every param in the net
                 param_grad = grads[name]
                 cfg = config[self.name + '_' + name]
                 next_param, next_config = optimizer(param, param_grad, cfg)
                 self.params[name] = next_param
                 config[self.name + '_' + name] = next_config
             return config
+
 
 class Linear(layer):
     '''shape is a tuple that define the out shape of this FC layer,
@@ -126,6 +127,26 @@ class Conv(layer):
         grads = conv_backward(
             input, (self.params['w'], self.params['b']),
             self.conv_params, dout)
+        return grads
+
+
+class Pool(layer):
+    def __init__(self, pool_height=2, pool_width=2, stride=2):
+        self.pool_params = defaultdict(int)
+        self.pool_params['pool_height'] = pool_height
+        self.pool_params['pool_width'] = pool_width
+        self.pool_params['stride'] = stride
+        super(Conv, self).__init__()
+
+    def _infer_shape(self, warmup_data):
+        pass
+
+    def forward(self, input):
+        out = max_pool_forward(input, self.pool_params)
+        return out
+
+    def grad(self, input, dout):
+        grads = max_pool_backward(input, self.pool_params, dout)
         return grads
 
 

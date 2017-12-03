@@ -150,6 +150,64 @@ def conv_backward(x, weights, conv_params, dout):
     return grads
 
 
+def max_pool_forward(x, pool_param):
+    """
+    A naive implementation of the forward pass for a max pooling layer.
+
+    Inputs:
+    - x: Input data, of shape (N, C, H, W)
+    - pool_param: dictionary with the following keys:
+      - 'pool_height': The height of each pooling region
+      - 'pool_width': The width of each pooling region
+      - 'stride': The distance between adjacent pooling regions
+
+    Returns a tuple of:
+    - out: Output data
+    - cache: (x, pool_param)
+    """
+    out = None
+    N, C, H, W = x.shape
+    HH, WW, stride = pool_param['pool_height'], pool_param['pool_width'], pool_param['stride']
+    H_out = int((H-HH)/stride+1)
+    W_out = int((W-WW)/stride+1)
+    out = np.zeros((N, C, H_out, W_out))
+    for i in range(H_out):
+        for j in range(W_out):
+            x_masked = x[:, :, i*stride:i*stride+HH, j*stride:j*stride+WW]
+            out[:, :, i, j] = np.max(x_masked, axis=(2,3))
+    cache = (x, pool_param)
+    return out
+
+
+def max_pool_backward(x, pool_param, dout):
+    """
+    A naive implementation of the backward pass for a max pooling layer.
+
+    Inputs:
+    - dout: Upstream derivatives
+    - cache: A tuple of (x, pool_param) as in the forward pass.
+
+    Returns:
+    - dx: Gradient with respect to x
+    """
+    dx = None
+    N, C, H, W = x.shape
+    HH, WW, stride = pool_param['pool_height'], pool_param['pool_width'], pool_param['stride']
+    H_out = int((H-HH)/stride+1)
+    W_out = int((W-WW)/stride+1)
+    dx = np.zeros_like(x)
+
+    for i in range(H_out):
+     for j in range(W_out):
+        x_masked = x[:,:,i*stride : i*stride+HH, j*stride : j*stride+WW]
+        max_x_masked = np.max(x_masked,axis=(2,3))
+        temp_binary_mask = (x_masked == (max_x_masked)[:,:,None,None])
+        dx[:,:,i*stride : i*stride+HH, j*stride : j*stride+WW] += temp_binary_mask * (dout[:,:,i,j])[:,:,None,None]
+    grads = dict({"dx":dx})
+    return grads
+
+
+
 def relu_forward(x):
     out = x * (x > 0)
     return out
