@@ -24,7 +24,6 @@ class net(object):
         '''
         check layers
         '''
-        assert isinstance(self.layer_stack[0], InputLayer), 'The first layer must be InputLayer'
         for _layer in self.layer_stack:
             assert isinstance(_layer, layer)
 
@@ -37,11 +36,12 @@ class net(object):
         self.input_dict = {}
         for _layer in self.layer_stack:
             self.input_dict[_layer] = None
+            self.params[_layer.name] = {}
             _layer.warmup(warmup_data)
             for p in _layer.params.keys():
                 d = {k: v for k, v in config.items()}
                 self.optim_configs[_layer.name + '_' + p] = d
-                self.params[_layer.name + '_' + p] = None
+                self.params[_layer][p] = None
 
     def forward(self, data_batch):
         '''

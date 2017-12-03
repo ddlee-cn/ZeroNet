@@ -282,8 +282,10 @@ class model(object):
                 if val_acc > self.best_val_acc:
                     self.best_val_acc = val_acc
                     self.best_params = {}
-                    for k, v in self.model.params.items():
-                        self.best_params[k] = v.copy()
+                    for layer, layer_params in self.model.params.items():
+                        self.best_params[layer] = {}
+                        for param, value in layer_params.items():
+                            self.best_params[layer][param] = value.copy()
 
         # At the end of training swap the best params into the model
         self.net.params = self.best_params
