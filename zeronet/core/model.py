@@ -1,9 +1,9 @@
 
 import os
 import pickle as pickle
-
+from functiontools import partial
 import numpy as np
-from core.optimizer import *
+import core.optimizer as optim
 
 
 class model(object):
@@ -15,16 +15,16 @@ class model(object):
     periodically check classification accuracy on both training and validation
     data to watch out for overfitting.
 
-    To train a model, you will first construct a Solver instance, passing the
+    To train a model, you will first construct a model instance, passing the
     model, dataset, and various optoins (learning rate, batch size, etc) to the
     constructor. You will then call the train() method to run the optimization
     procedure and train the model.
 
     After the train() method returns, model.params will contain the parameters
     that performed best on the validation set over the course of training.
-    In addition, the instance variable solver.loss_history will contain a list
+    In addition, the instance variable model.loss_history will contain a list
     of all losses encountered during training and the instance variables
-    solver.train_acc_history and solver.val_acc_history will be lists of the
+    model.train_acc_history and model.val_acc_history will be lists of the
     accuracies of the model on the training and validation set at each epoch.
 
     Example usage might look something like this:
@@ -36,7 +36,7 @@ class model(object):
       'y_val': # validation labels
     }
     model = MyAwesomeModel(hidden_size=100, reg=10)
-    solver = Solver(model, data,
+    model = model(model, data,
                     update_rule='sgd',
                     optim_config={
                       'learning_rate': 1e-3,
@@ -44,10 +44,10 @@ class model(object):
                     lr_decay=0.95,
                     num_epochs=10, batch_size=100,
                     print_every=100)
-    solver.train()
+    model.train()
 
 
-    A Solver works on a model object that must conform to the following API:
+    A model works on a model object that must conform to the following API:
 
     - model.params must be a dictionary mapping string parameter names to numpy
       arrays containing parameter values.
@@ -73,9 +73,9 @@ class model(object):
         names to gradients of the loss with respect to those parameters.
     """
 
-    def __init__(self, model, data, **kwargs):
+    def __init__(self, net, data, **kwargs):
         """
-        Construct a new Solver instance.
+        Construct a new model instance.
 
         Required arguments:
         - model: A model object conforming to the API described above
@@ -108,7 +108,7 @@ class model(object):
         - checkpoint_name: If not None, then save model checkpoints here every
           epoch.
         """
-        self.model = model
+        self.net = net
         self.X_train = data['X_train']
         self.y_train = data['y_train']
         self.X_val = data['X_val']
@@ -137,9 +137,7 @@ class model(object):
         if not hasattr(optim, self.update_rule):
             raise ValueError('Invalid update_rule "%s"' % self.update_rule)
         self.update_rule = getattr(optim, self.update_rule)
-
         self._reset()
-
 
     def _reset(self):
         """
@@ -154,11 +152,11 @@ class model(object):
         self.train_acc_history = []
         self.val_acc_history = []
 
-        # Make a deep copy of the optim_config for each parameter
-        self.optim_configs = {}
-        for p in self.model.params:
-            d = {k: v for k, v in self.optim_config.items()}
-            self.optim_configs[p] = d
+    def warmup(self):
+        num_train = self.X_train.shape[0]
+        batch_mask = np.random.choice(num_train, self.batch_size)
+        warm_up_data = self.X_train[batch_mask]
+        self.net.warmup(warm_up_data, self.optim_config)
 
 
     def _step(self):
@@ -172,33 +170,26 @@ class model(object):
         X_batch = self.X_train[batch_mask]
         y_batch = self.y_train[batch_mask]
 
-        # Compute loss and gradient
-        loss, grads = self.model.loss(X_batch, y_batch)
+        # foward pass
+        loss = self.net.loss(X_batch, y_batch)
+        grads = self.net.backward(self.optimizer, loss)
         self.loss_history.append(loss)
 
-        # Perform a parameter update
-        for p, w in self.model.params.items():
-            dw = grads[p]
-            config = self.optim_configs[p]
-            next_w, next_config = self.update_rule(w, dw, config)
-            self.model.params[p] = next_w
-            self.optim_configs[p] = next_config
-
-
     def _save_checkpoint(self):
-        if self.checkpoint_name is None: return
+        if self.checkpoint_name is None:
+            return
         checkpoint = {
-          'model': self.model,
-          'update_rule': self.update_rule,
-          'lr_decay': self.lr_decay,
-          'optim_config': self.optim_config,
-          'batch_size': self.batch_size,
-          'num_train_samples': self.num_train_samples,
-          'num_val_samples': self.num_val_samples,
-          'epoch': self.epoch,
-          'loss_history': self.loss_history,
-          'train_acc_history': self.train_acc_history,
-          'val_acc_history': self.val_acc_history,
+            'model': self.model,
+            'update_rule': self.update_rule,
+            'lr_decay': self.lr_decay,
+            'optim_config': self.net.optim_configs,
+            'batch_size': self.batch_size,
+            'num_train_samples': self.num_train_samples,
+            'num_val_samples': self.num_val_samples,
+            'epoch': self.epoch,
+            'loss_history': self.loss_history,
+            'train_acc_history': self.train_acc_history,
+            'val_acc_history': self.val_acc_history,
         }
         filename = '%s_epoch_%d.pkl' % (self.checkpoint_name, self.epoch)
         if self.verbose:
@@ -206,8 +197,7 @@ class model(object):
         with open(filename, 'wb') as f:
             pickle.dump(checkpoint, f)
 
-
-    def check_accuracy(self, X, y, num_samples=None, batch_size=100):
+    def predict(self, X, num_samples=None, batch_size=100):
         """
         Check accuracy of the model on the provided data.
 
@@ -220,8 +210,7 @@ class model(object):
           too much memory.
 
         Returns:
-        - acc: Scalar giving the fraction of instances that were correctly
-          classified by the model.
+        - y_pred: predictiong for test_data
         """
 
         # Maybe subsample the data
@@ -230,7 +219,6 @@ class model(object):
             mask = np.random.choice(N, num_samples)
             N = num_samples
             X = X[mask]
-            y = y[mask]
 
         # Compute predictions in batches
         num_batches = N // batch_size
@@ -240,13 +228,12 @@ class model(object):
         for i in range(num_batches):
             start = i * batch_size
             end = (i + 1) * batch_size
-            scores = self.model.loss(X[start:end])
+            # predict forward pass
+            scores = self.net.forward(X[start:end])
             y_pred.append(np.argmax(scores, axis=1))
         y_pred = np.hstack(y_pred)
-        acc = np.mean(y_pred == y)
 
-        return acc
-
+        return y_pred
 
     def train(self):
         """
@@ -262,15 +249,15 @@ class model(object):
             # Maybe print training loss
             if self.verbose and t % self.print_every == 0:
                 print('(Iteration %d / %d) loss: %f' % (
-                       t + 1, num_iterations, self.loss_history[-1]))
+                    t + 1, num_iterations, self.loss_history[-1]))
 
             # At the end of every epoch, increment the epoch counter and decay
             # the learning rate.
             epoch_end = (t + 1) % iterations_per_epoch == 0
             if epoch_end:
                 self.epoch += 1
-                for k in self.optim_configs:
-                    self.optim_configs[k]['learning_rate'] *= self.lr_decay
+                for k in self.net.optim_configs:
+                    self.net.optim_configs[k]['learning_rate'] *= self.lr_decay
 
             # Check train and val accuracy on the first iteration, the last
             # iteration, and at the end of each epoch.
@@ -278,16 +265,16 @@ class model(object):
             last_it = (t == num_iterations - 1)
             if first_it or last_it or epoch_end:
                 train_acc = self.check_accuracy(self.X_train, self.y_train,
-                    num_samples=self.num_train_samples)
+                                                num_samples=self.num_train_samples)
                 val_acc = self.check_accuracy(self.X_val, self.y_val,
-                    num_samples=self.num_val_samples)
+                                              num_samples=self.num_val_samples)
                 self.train_acc_history.append(train_acc)
                 self.val_acc_history.append(val_acc)
                 self._save_checkpoint()
 
                 if self.verbose:
                     print('(Epoch %d / %d) train acc: %f; val_acc: %f' % (
-                           self.epoch, self.num_epochs, train_acc, val_acc))
+                        self.epoch, self.num_epochs, train_acc, val_acc))
 
                 # Keep track of the best model
                 if val_acc > self.best_val_acc:
@@ -297,4 +284,4 @@ class model(object):
                         self.best_params[k] = v.copy()
 
         # At the end of training swap the best params into the model
-        self.model.params = self.best_params
+        self.net.params = self.best_params

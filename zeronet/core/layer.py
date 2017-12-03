@@ -20,7 +20,8 @@ class layer(object):
     params contains names and value for params insied layer
     '''
 
-    def __init__(self, *inputs):
+    def __init__(self, name, *inputs):
+        self.name = name
         self.shape_dict = defaultdict(tuple)
         self.params = defaultdict(np.array)
 
@@ -51,20 +52,23 @@ class layer(object):
     def grad(self, input, dout):
         raise NotImplementedError
 
-    def update(self, grads, optimizer):
+    def update(self, grads, optimizer, config):
         '''Update the params inside this layer,
             should be called after backward process.
             optimizer should be a partial function after configuration
             in the model class'''
         if len(self.params) == 0:
             # some layer have no params
-            pass
+            return config
         else:
             for name, param in self.params.items():
+            # Keep a optim config dict for every param in the net
                 param_grad = grads[name]
-                next_param = optimizer(param, param_grad)
+                cfg = config[self.name + '_' + name]
+                next_param, next_config = optimizer(param, param_grad, cfg)
                 self.params[name] = next_param
-
+                config[self.name + '_' + name] = next_config
+            return config
 
 class Linear(layer):
     '''shape is a tuple that define the out shape of this FC layer,
