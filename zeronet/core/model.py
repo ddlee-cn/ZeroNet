@@ -170,9 +170,11 @@ class model(object):
         X_batch = self.X_train[batch_mask]
         y_batch = self.y_train[batch_mask]
 
+        # self.net.input_dict updates every pass
         # foward pass
-        loss = self.net.loss(X_batch, y_batch)
-        grads = self.net.backward(self.optimizer, loss)
+        loss, dout = self.net.loss(X_batch, y_batch)
+        # backward pass
+        self.net.backward(self.optimizer, loss, dout)
         self.loss_history.append(loss)
 
     def _save_checkpoint(self):
