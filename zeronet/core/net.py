@@ -18,14 +18,7 @@ class net(object):
         self.input_dict = None
         self.optim_configs = None
         self.params = None
-        self.check()
-
-    def check(self):
-        '''
-        check layers
-        '''
-        for _layer in self.layer_stack:
-            assert isinstance(_layer, layer)
+        self.DEBUG = False
 
     def warmup(self, warmup_data, config):
         '''
@@ -56,11 +49,17 @@ class net(object):
         out = None
         for k, _layer in enumerate(self.layer_stack):
             if k != 0:
-                self.input_dict[_layer] = out
+                self.input_dict[_layer.name] = out
                 out = _layer.forward(out)
             else:
-                self.input_dict[_layer] = data_batch
+                self.input_dict[_layer.name] = data_batch
                 out = _layer.forward(data_batch)
+            if self.DEBUG:
+                print(_layer.name)
+                print('input_shape', self.input_dict[_layer.name].shape)
+                print('output_shape', out.shape)
+        if self.DEBUG:
+            print(out)
         return out
 
     def loss(self, X_batch, y_batch):

@@ -57,6 +57,7 @@ class layer(object):
             should be called after backward process.
             optimizer should be a partial function after configuration
             in the model class'''
+        DEBUG = False
         if len(self.params) == 0:
             # some layer have no params
             return config
@@ -68,6 +69,9 @@ class layer(object):
                 next_param, next_config = optimizer(param, param_grad, cfg)
                 self.params[name] = next_param
                 config[self.name + '_' + name] = next_config
+                if DEBUG:
+                    print(name)
+                    print('param_shape', next_param.shape)
             return config
 
 
