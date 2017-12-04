@@ -135,7 +135,7 @@ class model(object):
         # name with the actual function
         if not hasattr(optim, self.update_rule):
             raise ValueError('Invalid update_rule "%s"' % self.update_rule)
-        self.update_rule = getattr(optim, self.update_rule)
+        self.optimizer= getattr(optim, self.update_rule)
         self._reset()
 
     def _reset(self):
@@ -173,7 +173,7 @@ class model(object):
         # foward pass
         loss, dout = self.net.loss(X_batch, y_batch)
         # backward pass
-        self.net.backward(self.optimizer, loss, dout)
+        self.net.backward(self.optimizer, dout)
         self.loss_history.append(loss)
 
     def _save_checkpoint(self):
@@ -236,6 +236,9 @@ class model(object):
 
         return y_pred
 
+    def check_accuracy(self, y_pred, y):
+        return np.mean(y_pred==y)
+
     def train(self):
         """
         Run optimization to train the model.
@@ -265,10 +268,10 @@ class model(object):
             first_it = (t == 0)
             last_it = (t == num_iterations - 1)
             if first_it or last_it or epoch_end:
-                train_acc = self.check_accuracy(self.X_train, self.y_train,
-                                                num_samples=self.num_train_samples)
-                val_acc = self.check_accuracy(self.X_val, self.y_val,
-                                              num_samples=self.num_val_samples)
+                train_y_pred = self.predict(self.X_train, num_samples=self.num_train_samples)
+                val_y_pred = self.predict(self.X_val, num_samples=self.num_val_samples)
+                train_acc = self.check_accuracy(train_y_pred, self.y_train)
+                val_acc = self.check_accuracy(val_y_pred, self.y_val)
                 self.train_acc_history.append(train_acc)
                 self.val_acc_history.append(val_acc)
                 self._save_checkpoint()
@@ -281,7 +284,7 @@ class model(object):
                 if val_acc > self.best_val_acc:
                     self.best_val_acc = val_acc
                     self.best_params = {}
-                    for layer, layer_params in self.model.params.items():
+                    for layer, layer_params in self.net.params.items():
                         self.best_params[layer] = {}
                         for param, value in layer_params.items():
                             self.best_params[layer][param] = value.copy()

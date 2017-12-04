@@ -34,10 +34,16 @@ class net(object):
         self.optim_configs = {}
         self.params = {}
         self.input_dict = {}
-        for _layer in self.layer_stack:
+        out = None
+        for k, _layer in enumerate(self.layer_stack):
             self.input_dict[_layer] = None
             self.params[_layer.name] = {}
-            _layer.warmup(warmup_data)
+            if k != 0:
+                _layer.warmup(out)
+                out = _layer.forward(out)
+            else:
+                _layer.warmup(warmup_data)
+                out = _layer.forward(warmup_data)
             for p, param in _layer.params.items():
                 d = {k: v for k, v in config.items()}
                 self.optim_configs[_layer.name + '_' + p] = d
