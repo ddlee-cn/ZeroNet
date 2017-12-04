@@ -37,7 +37,7 @@ class layer(object):
         '''initiate weights inside the layer, layer.params should be a dict
         with param names and values'''
         mu = 0
-        std = 0.5
+        std = 0.05
         for name, shape in self.shape_dict.items():
             self.params[name] = np.random.normal(mu, std, size=shape)
 
