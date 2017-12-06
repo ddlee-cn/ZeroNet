@@ -4,18 +4,14 @@
    contain the root `toctree` directive.
 
 ZeroNet: 完全基于NumPy、轻量级的神经网络框架
-===================================
+================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
+   about
    function.md
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 
 =============
 Introduction
