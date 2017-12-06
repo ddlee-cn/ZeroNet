@@ -20,13 +20,12 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+# At top on conf.py (with other import statements)
+import recommonmark
+from recommonmark.transform import AutoStructify
 
 # -- General configuration ------------------------------------------------
-# sphinx theme
-# import sphinx_rtd_theme
-# html_theme = "sphinx_rtd_theme"
-# html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
@@ -45,10 +44,15 @@ templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+# add markdown support use rcommonmark
+# ref http://recommonmark.readthedocs.io/en/latest/index.html
+from recommonmark.parser import CommonMarkParser
 
+source_suffix = ['.rst', '.md']
+#source_suffix = '.rst'
+source_parsers = {
+   '.md': 'recommonmark.parser.CommonMarkParser',
+}
 # The master toctree document.
 master_doc = 'index'
 
@@ -89,25 +93,27 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'sphinx_rtd_theme'
+# sphinx theme
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {
-    'typekit_id': hiw1hhg,
-    'canonical_url':
-    'analytics_id':
-    'collapse_navigation': False
-    'sticky_navigation': False
-    'navigation_depth': 4
-    'includehidden': True
-    'logo_only':
-    'display_version': True
-    'prev_next_buttons_location': bottom
-}
+# html_theme_options = {
+#     'typekit_id': hiw1hhg,
+#     'canonical_url':,
+#     'analytics_id':,
+#     'collapse_navigation': False,
+#     'sticky_navigation': False,
+#     'navigation_depth': 4,
+#     'includehidden': True,
+#     'logo_only':,
+#     'display_version': True,
+#     'prev_next_buttons_location': bottom,
+# }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
