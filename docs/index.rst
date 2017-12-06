@@ -3,19 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ZeroNet's documentation!
+ZeroNet: 完全基于NumPy、轻量级的神经网络框架
 ===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   about
-
-
-
-Indices and tables
-==================
+   function.md
 
 * :ref:`genindex`
 * :ref:`modindex`
