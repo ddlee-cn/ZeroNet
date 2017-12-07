@@ -16,10 +16,15 @@
 与前向函数类似，输入包括后一层传来的数据梯度`dout`、本层数据输入`x`、本层参数`weights`和本层超参。
 
 ### 目前支持的函数列表
-- `linear_forward(x, weights)`, `linear_backward(x, weights, dout)
-- `conv_forward(x, weights, conv_params)`, `conv_backward(x, weights, conv_params, dout)`
-- `max_pool_forward(x, pool_param)`, `max_pool_backward(x, pool_param, dout)`
-- `relu_forward(x)`, `relu_backward(x, dout)`
-- `sigmoid_forward(x)`, `sigmoid_backward(x, dout)`
+- `linear_forward(x, weights)`
+- `linear_backward(x, weights, dout)`
+- `conv_forward(x, weights, conv_params)`
+- `conv_backward(x, weights, conv_params, dout)`
+- `max_pool_forward(x, pool_param)`
+- `max_pool_backward(x, pool_param, dout)`
+- `relu_forward(x)`
+- `relu_backward(x, dout)`
+- `sigmoid_forward(x)`
+- `sigmoid_backward(x, dout)`
 
 更多关于这些函数实现的信息请参见[博文](https://blog.ddlee.cn/)和[源码](https://github.com/ddlee96/ZeroNet/blob/master/zeronet/core/function.py)。
