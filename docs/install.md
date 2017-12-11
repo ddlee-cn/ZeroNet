@@ -1,4 +1,4 @@
-## How to Install
+## 安装ZeroNet
 
 现阶段，`ZeroNet`可由github源码调用。
 

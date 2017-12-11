@@ -14,6 +14,9 @@ ZeroNet: 完全基于NumPy、轻量级的神经网络框架
    install.md
    overview.md
    function.md
+   layer.md
+   net.md
+   model.md
 
 =============
 Introduction
