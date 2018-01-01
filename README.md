@@ -3,7 +3,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)[![Documentation Status](https://readthedocs.org/projects/zeronet-docs/badge/?version=latest)](http://zeronet-docs.readthedocs.io/?badge=docs)
 
 
-ZeroNet是一个基于numpy的纯手打、轻量级、几乎什么功能都没有的神经网络框架。
+ZeroNet是一个完全基于numpy的纯手打、轻量级、几乎什么功能都没有的神经网络框架。它可以作为你了解深度学习库的简易起点。麻雀虽小，五脏俱全。
 
 ### 设计思路
 
