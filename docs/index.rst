@@ -45,6 +45,7 @@ ZeroNet是一个完全基于numpy的纯手打、轻量级、几乎什么功能�
 .. _Pipenv: https://docs.pipenv.org 
 
 .. code-block:: bash
+
     # install Pipenv
     pip install pipenv
 
