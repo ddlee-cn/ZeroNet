@@ -1,0 +1,198 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "f505912d163a9618686ab4dff639f3c2383d9d484e6225843446a16eafd5e1bf"
+        },
+        "host-environment-markers": {
+            "implementation_name": "cpython",
+            "implementation_version": "3.6.3",
+            "os_name": "posix",
+            "platform_machine": "x86_64",
+            "platform_python_implementation": "CPython",
+            "platform_release": "3.13.0-135-generic",
+            "platform_system": "Linux",
+            "platform_version": "#184-Ubuntu SMP Wed Oct 18 11:55:51 UTC 2017",
+            "python_full_version": "3.6.3",
+            "python_version": "3.6",
+            "sys_platform": "linux"
+        },
+        "pipfile-spec": 6,
+        "requires": {},
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.tuna.tsinghua.edu.cn/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "bleach": {
+            "hashes": [],
+            "version": "==2.1.2"
+        },
+        "decorator": {
+            "hashes": [],
+            "version": "==4.2.1"
+        },
+        "entrypoints": {
+            "hashes": [],
+            "version": "==0.2.3"
+        },
+        "html5lib": {
+            "hashes": [],
+            "version": "==1.0.1"
+        },
+        "ipykernel": {
+            "hashes": [],
+            "version": "==4.8.0"
+        },
+        "ipython": {
+            "hashes": [],
+            "version": "==6.2.1"
+        },
+        "ipython-genutils": {
+            "hashes": [],
+            "version": "==0.2.0"
+        },
+        "ipywidgets": {
+            "hashes": [],
+            "version": "==7.1.1"
+        },
+        "jedi": {
+            "hashes": [],
+            "version": "==0.11.1"
+        },
+        "jinja2": {
+            "hashes": [],
+            "version": "==2.10"
+        },
+        "jsonschema": {
+            "hashes": [],
+            "version": "==2.6.0"
+        },
+        "jupyter": {
+            "hashes": [],
+            "version": "==1.0.0"
+        },
+        "jupyter-client": {
+            "hashes": [],
+            "version": "==5.2.2"
+        },
+        "jupyter-console": {
+            "hashes": [],
+            "version": "==5.2.0"
+        },
+        "jupyter-core": {
+            "hashes": [],
+            "version": "==4.4.0"
+        },
+        "markupsafe": {
+            "hashes": [],
+            "version": "==1.0"
+        },
+        "mistune": {
+            "hashes": [],
+            "version": "==0.8.3"
+        },
+        "nbconvert": {
+            "hashes": [],
+            "version": "==5.3.1"
+        },
+        "nbformat": {
+            "hashes": [],
+            "version": "==4.4.0"
+        },
+        "notebook": {
+            "hashes": [],
+            "version": "==5.4.0"
+        },
+        "numpy": {
+            "hashes": [],
+            "version": "==1.14.0"
+        },
+        "pandocfilters": {
+            "hashes": [],
+            "version": "==1.4.2"
+        },
+        "parso": {
+            "hashes": [],
+            "version": "==0.1.1"
+        },
+        "pexpect": {
+            "hashes": [],
+            "markers": "sys_platform != 'win32'",
+            "version": "==4.3.1"
+        },
+        "pickleshare": {
+            "hashes": [],
+            "version": "==0.7.4"
+        },
+        "prompt-toolkit": {
+            "hashes": [],
+            "version": "==1.0.15"
+        },
+        "ptyprocess": {
+            "hashes": [],
+            "markers": "os_name != 'nt'",
+            "version": "==0.5.2"
+        },
+        "pygments": {
+            "hashes": [],
+            "version": "==2.2.0"
+        },
+        "python-dateutil": {
+            "hashes": [],
+            "version": "==2.6.1"
+        },
+        "pyzmq": {
+            "hashes": [],
+            "version": "==16.0.4"
+        },
+        "qtconsole": {
+            "hashes": [],
+            "version": "==4.3.1"
+        },
+        "send2trash": {
+            "hashes": [],
+            "version": "==1.4.2"
+        },
+        "simplegeneric": {
+            "hashes": [],
+            "version": "==0.8.1"
+        },
+        "six": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "terminado": {
+            "hashes": [],
+            "version": "==0.8.1"
+        },
+        "testpath": {
+            "hashes": [],
+            "version": "==0.3.1"
+        },
+        "tornado": {
+            "hashes": [],
+            "version": "==4.5.3"
+        },
+        "traitlets": {
+            "hashes": [],
+            "version": "==4.3.2"
+        },
+        "wcwidth": {
+            "hashes": [],
+            "version": "==0.1.7"
+        },
+        "webencodings": {
+            "hashes": [],
+            "version": "==0.5.1"
+        },
+        "widgetsnbextension": {
+            "hashes": [],
+            "version": "==3.1.3"
+        }
+    },
+    "develop": {}
+}
