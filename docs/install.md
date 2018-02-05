@@ -14,4 +14,4 @@ import sys
 sys.path.insert(0, os.path.join("..\"))
 ```
 
-之后，便可以用`from zeronet.core.layer import Linear`的形式使用。更多细节请参见文档的其他部分
+之后，便可以用`from zeronet.core.layer import Linear`的形式使用。更多细节请参见文档的其他部分。
