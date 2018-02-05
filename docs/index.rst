@@ -24,33 +24,31 @@ Introduction
 
 ZeroNet是一个基于numpy的纯手打、轻量级、几乎什么功能都没有的神经网络框架。
 
-## 演示
+演示
+--------------
 
-
-1.Clone repo
+1.拷贝代码到本地
 ```
 git clone https://github.com/ddlee96/Zeronet.git
 ```
-2.Prepare enviroment
+2.安装依赖
 
-Requirement: Numpy, Jupyter(for demo), Matplotlib(for demo)
+需要： Numpy, Jupyter(演示用), Matplotlib(演示用)
 
-(optional) Prepare env using [Pipenv](https://docs.pipenv.org)
+(可选) 使用 Pipenv_ 安装依赖：
+.. _Pipenv: https://docs.pipenv.org 
 
-```
+.. code-block:: bash
 # install Pipenv
 pip install pipenv
 
 # install dependencies, pipenv will install packages based on Pipfile.lock
 cd path/to/zeronet
 pipenv install
-```
 
-3.Get Dataset(CIFAR-10)
-```
-bash data/get_cifar.sh
-```
 
-4.Try Demo
-Start Jupyter notebook and open `demo/demo.ipynb`.
+3.准备数据集(CIFAR-10)
+``bash data/get_cifar.sh``
 
+4.演示
+用``Jupyter notebook``打开``demo/demo.ipynb``即可。
