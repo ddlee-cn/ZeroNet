@@ -66,3 +66,8 @@ ZeroNet是一个完全基于numpy的纯手打、轻量级、几乎什么功能�
 4.演示
 
 用 ``Jupyter notebook`` 打开 ``demo/demo.ipynb`` 即可。
+
+源码
+-------------
+源码地址： https://github.com/ddlee96/ZeroNet
+问题反馈： https://github.com/ddlee96/ZeroNet/issues/new
