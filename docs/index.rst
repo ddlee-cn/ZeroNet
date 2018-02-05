@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-ZeroNet: 完全基于NumPy、轻量级的神经网络框架
+ZeroNet: 基于NumPy的最小可用神经网络框架
 ================================================
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: 目录：
 
    about.md
    install.md
@@ -19,7 +19,7 @@ ZeroNet: 完全基于NumPy、轻量级的神经网络框架
    model.md
 
 =============
-Introduction
+简介
 =============
 
 ZeroNet是一个完全基于numpy的纯手打、轻量级、几乎什么功能都没有的神经网络框架。它可以作为你了解深度学习库的简易起点。麻雀虽小，五脏俱全。
@@ -30,6 +30,13 @@ ZeroNet是一个完全基于numpy的纯手打、轻量级、几乎什么功能�
 - 基本网络层的numpy朴素实现（全连接、卷积、ReLU等）
 - 网络结构构建类和数据组织
 - 训练逻辑组织
+
+缺点
+-----------
+
+- 无GPU支持，朴素实现，效率低下
+- 无计算资源的抽象，资源利用低
+- 目前仅支持单序列的网络结构，不支持RNN等
 
 演示
 --------------
