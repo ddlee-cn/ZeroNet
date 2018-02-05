@@ -27,4 +27,4 @@
 - `sigmoid_forward(x)`
 - `sigmoid_backward(x, dout)`
 
-更多关于这些函数实现的信息请参见[博文](https://blog.ddlee.cn/)和[源码](https://github.com/ddlee96/ZeroNet/blob/master/zeronet/core/function.py)。
+更多关于这些函数实现的信息请参见[源码](https://github.com/ddlee96/ZeroNet/blob/master/zeronet/core/function.py)。

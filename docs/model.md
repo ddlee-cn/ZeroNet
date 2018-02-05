@@ -43,4 +43,4 @@ self.net.backward(self.optimizer, dout)
 
 推断时，传入测试数据后，由`predict()`方法可以得到`y_pred`，之后连同真实值调用`check_accuracy()`方法即可得到正确率。
 
-了解更多有关`model`的作用，参见[边界划分与设计理念](./overview.html)。
+了解更多有关`model`的作用，参见[设计理念](./overview.html)。

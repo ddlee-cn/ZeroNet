@@ -56,4 +56,4 @@
 `ReLU`和`Sigmoid`为非线性激活层，不含习得参数。
 
 
-了解更多有关`layer`的作用，参见[边界划分与设计理念](./overview.html)。
+了解更多有关`layer`的作用，参见[设计理念](./overview.html)。
