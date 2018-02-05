@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f505912d163a9618686ab4dff639f3c2383d9d484e6225843446a16eafd5e1bf"
+            "sha256": "e574104437272ae121a9aeec14ec66fa465e0612f0698171a55ecb9b3b9bbe79"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -31,6 +31,10 @@
             "hashes": [],
             "version": "==2.1.2"
         },
+        "cycler": {
+            "hashes": [],
+            "version": "==0.10.0"
+        },
         "decorator": {
             "hashes": [],
             "version": "==4.2.1"
@@ -49,6 +53,7 @@
         },
         "ipython": {
             "hashes": [],
+            "markers": "python_version >= '3.3'",
             "version": "==6.2.1"
         },
         "ipython-genutils": {
@@ -90,6 +95,10 @@
         "markupsafe": {
             "hashes": [],
             "version": "==1.0"
+        },
+        "matplotlib": {
+            "hashes": [],
+            "version": "==2.1.2"
         },
         "mistune": {
             "hashes": [],
@@ -134,16 +143,23 @@
         },
         "ptyprocess": {
             "hashes": [],
-            "markers": "os_name != 'nt'",
             "version": "==0.5.2"
         },
         "pygments": {
             "hashes": [],
             "version": "==2.2.0"
         },
+        "pyparsing": {
+            "hashes": [],
+            "version": "==2.2.0"
+        },
         "python-dateutil": {
             "hashes": [],
             "version": "==2.6.1"
+        },
+        "pytz": {
+            "hashes": [],
+            "version": "==2017.3"
         },
         "pyzmq": {
             "hashes": [],
